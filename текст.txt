@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pallet Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pallet Calculator</h1>
+        <label for="totalBoxes">Total Boxes:</label>
+        <input type="number" id="totalBoxes" placeholder="Enter total boxes">
+
+        <label for="minBoxes">Min Boxes per Pallet:</label>
+        <input type="number" id="minBoxes" placeholder="Enter min boxes per pallet">
+
+        <label for="maxBoxes">Max Boxes per Pallet:</label>
+        <input type="number" id="maxBoxes" placeholder="Enter max boxes per pallet">
+
+        <button onclick="calculatePalettes()">Calculate</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculatePalettes() {
+            const totalBoxes = parseInt(document.getElementById("totalBoxes").value);
+            const minBoxes = parseInt(document.getElementById("minBoxes").value);
+            const maxBoxes = parseInt(document.getElementById("maxBoxes").value);
+            const resultDiv = document.getElementById("result");
+
+            if (isNaN(totalBoxes) || isNaN(minBoxes) || isNaN(maxBoxes) || totalBoxes <= 0 || minBoxes <= 0 || maxBoxes < minBoxes) {
+                resultDiv.innerHTML = "Invalid input. Please check your numbers.";
+                return;
+            }
+
+            let maxPalettes = Math.floor(totalBoxes / maxBoxes);
+            let remainder = totalBoxes % maxBoxes;
+
+            if (remainder !== 0 && remainder < minBoxes) {
+                const extraBoxesNeeded = minBoxes - remainder;
+                maxPalettes -= Math.ceil(extraBoxesNeeded / maxBoxes);
+                remainder = totalBoxes - maxPalettes * maxBoxes;
+            }
+
+            const minPalettes = remainder > 0 ? Math.ceil(remainder / minBoxes) : 0;
+            const totalPalettes = maxPalettes + minPalettes;
+
+            resultDiv.innerHTML = `
+                <p>Pallets with max boxes: ${maxPalettes}</p>
+                <p>Pallets with min boxes: ${minPalettes}</p>
+                <p>Total pallets: ${totalPalettes}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
